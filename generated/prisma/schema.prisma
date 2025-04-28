@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum Operation {
+  list
+  get
+  create
+  update
+  delete
+  search
+  onCreate
+  onUpdate
+  onDelete
+}
+
+enum RoleTypes {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  AUTHOR
+  READER
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String
+  roleType    RoleTypes
+  permissions Permission[]
+  User        User[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now())
+}
+
+model Permission {
+  id                String      @id @default(uuid())
+  modelName         String
+  allowedOperations Operation[]
+  rolePermissionsId String
+  role              Role        @relation(fields: [rolePermissionsId], references: [id])
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @default(now())
+}
+
+model User {
+  id          String     @id @default(uuid())
+  email       String
+  name        String
+  password    String
+  userRoleId  String
+  role        Role       @relation(fields: [userRoleId], references: [id])
+  userStatus  String     @default("Active")
+  roleType    RoleTypes?
+  phoneNumber String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @default(now())
+  comments    Comment[]
+  likes       Like[]
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  articles  Article[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+}
+
+model Article {
+  id           String         @id @default(uuid())
+  title        String
+  content      String
+  views        Int            @default(0)
+  categoryId   String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @default(now())
+  comments     Comment[]
+  likes        Like[]
+  ArticleImage ArticleImage[]
+  Category     Category       @relation(fields: [categoryId], references: [id])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  text      String
+  articleId String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  article   Article  @relation(fields: [articleId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  userId    String
+  articleId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  article   Article  @relation(fields: [articleId], references: [id])
+}
+
+model ArticleImage {
+  id        String   @id @default(uuid())
+  articleId String
+  imageUrl  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  article   Article  @relation(fields: [articleId], references: [id])
+}

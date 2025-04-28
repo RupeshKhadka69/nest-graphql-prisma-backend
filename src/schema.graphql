@@ -1,0 +1,73 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: ID!
+  email: String!
+  name: String!
+  userRoleId: String!
+  userStatus: String!
+  roleType: RoleTypes
+  phoneNumber: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""The role types available in the system"""
+enum RoleTypes {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  AUTHOR
+  READER
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type LoginResponse {
+  access_token: String!
+}
+
+type Query {
+  users: [User!]!
+  me: User!
+  user(id: ID!): User!
+  userByEmail(email: String!): User
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  removeUser(id: ID!): User!
+  login(loginInput: LoginInput!): LoginResponse!
+}
+
+input CreateUserInput {
+  email: String!
+  name: String!
+  password: String!
+  userRoleId: String
+  userStatus: String
+  roleType: RoleTypes
+  phoneNumber: String
+}
+
+input UpdateUserInput {
+  email: String
+  name: String
+  password: String
+  userRoleId: String
+  userStatus: String
+  roleType: RoleTypes
+  phoneNumber: String
+  id: ID!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
