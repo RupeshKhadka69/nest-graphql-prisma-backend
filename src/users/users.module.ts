@@ -2,10 +2,18 @@ import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersResolver } from './users.resolver';
 import { PrismaModule } from '../prisma/prisma.module';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from './auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
-  imports: [PrismaModule],
+  imports: [
+    PrismaModule,
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '2d' },
+    }),
+  ],
   providers: [
     {
       provide: APP_GUARD,
@@ -14,6 +22,6 @@ import { APP_GUARD } from '@nestjs/core';
     UsersResolver,
     UsersService,
   ],
-  exports: [UsersService], // Export UsersService so it can be used by other modules like Auth
+  exports: [UsersService],
 })
 export class UsersModule {}

@@ -2,15 +2,20 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { PrismaService } from '../prisma/prisma.service';
 import bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwtService: JwtService,
+  ) {}
 
   async create(createUserInput: CreateUserInput) {
     // If no role ID is provided, find or create a default 'READER' role
@@ -52,7 +57,34 @@ export class UsersService {
       throw error;
     }
   }
+  async signIn(email: string, pass: string): Promise<{ access_token: string }> {
+    try {
+      // Use findByEmail instead of findOne
+      const user = await this.prisma.user.findFirst({
+        where: { email },
+      });
+      if (!user) {
+        throw new NotFoundException(`User with email ${email} not found`);
+      }
 
+      // Verify password with bcrypt
+      const isPasswordValid = await bcrypt.compare(pass, user.password);
+      if (!isPasswordValid) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+
+      const payload = {
+        sub: user.id,
+        email: user.email,
+      };
+      return {
+        access_token: await this.jwtService.signAsync(payload),
+      };
+    } catch (error) {
+      console.log('errors', error);
+      throw new UnauthorizedException('Invalid credentials');
+    }
+  }
   findAll() {
     return this.prisma.user.findMany();
   }

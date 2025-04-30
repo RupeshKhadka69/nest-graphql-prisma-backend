@@ -41,9 +41,9 @@ type Query {
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
+  login(loginInput: LoginInput!): LoginResponse!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: ID!): User!
-  login(loginInput: LoginInput!): LoginResponse!
 }
 
 input CreateUserInput {
@@ -56,6 +56,11 @@ input CreateUserInput {
   phoneNumber: String
 }
 
+input LoginInput {
+  email: String!
+  password: String!
+}
+
 input UpdateUserInput {
   email: String
   name: String
@@ -65,9 +70,4 @@ input UpdateUserInput {
   roleType: RoleTypes
   phoneNumber: String
   id: ID!
-}
-
-input LoginInput {
-  email: String!
-  password: String!
 }
