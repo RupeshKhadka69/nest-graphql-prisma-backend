@@ -27,7 +27,7 @@ export class UsersResolver {
     return this.usersService.findAll();
   }
   @Query(() => User, { name: 'me' })
-  getMyProfile(@CurrentUser() user) {
+  getMyProfile(@CurrentUser() user:any) {
     return this.usersService.findOneById(user.sub);
   }
 

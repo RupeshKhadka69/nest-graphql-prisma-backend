@@ -7,6 +7,10 @@ import { join } from 'path';
 import { UsersModule } from './users/users.module';
 import { PrismaModule } from './prisma/prisma.module';
 // import { AuthModule } from './auth/auth.module';
+import { CategoryModule } from './category/category.module';
+import { LikeModule } from './like/like.module';
+import { CommentModule } from './comment/comment.module';
+import { ArticleModule } from './article/article.module';
 
 @Module({
   imports: [
@@ -35,6 +39,10 @@ import { PrismaModule } from './prisma/prisma.module';
     }),
     PrismaModule,
     UsersModule,
+    // ArticleModule,
+    // CommentModule,
+    // LikeModule,
+    CategoryModule,
     // AuthModule,
   ],
   controllers: [AppController],

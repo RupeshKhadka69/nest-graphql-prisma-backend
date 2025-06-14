@@ -32,11 +32,21 @@ type LoginResponse {
   access_token: String!
 }
 
+type Category {
+  id: ID!
+  name: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  articleCount: Int
+}
+
 type Query {
   users: [User!]!
   me: User!
   user(id: ID!): User!
   userByEmail(email: String!): User
+  categories: [Category!]!
+  category(id: ID!): Category!
 }
 
 type Mutation {
@@ -44,6 +54,9 @@ type Mutation {
   login(loginInput: LoginInput!): LoginResponse!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: ID!): User!
+  createCategory(createCategoryInput: CreateCategoryInput!): Category!
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
+  removeCategory(id: ID!): Category!
 }
 
 input CreateUserInput {
@@ -69,5 +82,14 @@ input UpdateUserInput {
   userStatus: String
   roleType: RoleTypes
   phoneNumber: String
+  id: ID!
+}
+
+input CreateCategoryInput {
+  name: String!
+}
+
+input UpdateCategoryInput {
+  name: String
   id: ID!
 }
