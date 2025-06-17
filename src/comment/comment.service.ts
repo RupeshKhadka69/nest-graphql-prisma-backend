@@ -10,11 +10,11 @@ import { Comment } from './entities/comment.entity';
 
 @Injectable()
 export class CommentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
   async create(
     createCommentInput: CreateCommentInput,
     userId: string,
-  ): Promise<Comment> {
+  ) {
     const article = await this.prisma.article.findUnique({
       where: { id: createCommentInput.articleId },
     });
@@ -102,7 +102,7 @@ export class CommentService {
   async update(
     updateCommentInput: UpdateCommentInput,
     userId: string,
-  ): Promise<Comment> {
+  ) {
     const { id, ...updateData } = updateCommentInput;
 
     // Check if comment exists and belongs to user
