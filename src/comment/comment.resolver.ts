@@ -13,8 +13,7 @@ import { CreateCommentInput } from './dto/create-comment.input';
 import { UpdateCommentInput } from './dto/update-comment.input';
 import { CurrentUser } from 'src/users/current.decorator';
 import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-
+import { AuthGuard } from 'src/users/auth.guard';
 @Resolver(() => Comment)
 export class CommentResolver {
   constructor(private readonly commentService: CommentService) {}

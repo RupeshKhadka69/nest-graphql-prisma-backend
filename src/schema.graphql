@@ -40,11 +40,65 @@ type Category {
   articleCount: Int
 }
 
+type Comment {
+  id: ID!
+  text: String!
+  articleId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userId: String!
+  user: User
+  article: Article
+}
+
+type ArticleImage {
+  id: ID!
+  articleId: String!
+  imageUrl: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Article {
+  id: ID!
+  title: String!
+  content: String!
+  views: Int!
+  categoryId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  category: Category!
+  comments: [Comment!]
+  images: [ArticleImage!]
+  commentCount: Int!
+  likeCount: Int!
+}
+
+type Like {
+  id: ID!
+  userId: String!
+  articleId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User
+  article: Article
+}
+
 type Query {
   users: [User!]!
   me: User!
   user(id: ID!): User!
   userByEmail(email: String!): User
+  articles(skip: Int! = 0, take: Int! = 10, categoryId: String, searchTerm: String): [Article!]!
+  article(id: ID!, incrementViews: Boolean! = false): Article!
+  articlesByCategory(categoryId: String!, skip: Int! = 0, take: Int! = 10): [Article!]!
+  mostViewedArticles(take: Int! = 10): [Article!]!
+  mostLikedArticles(take: Int! = 10): [Article!]!
+  like(id: Int!): Like!
+  articleLikes(articleId: ID!): [Like!]!
+  userLikes: [Like!]!
+  hasUserLiked(articleId: ID!): Boolean!
+  likeCount(articleId: ID!): Float!
   categories: [Category!]!
   category(id: ID!): Category!
 }
@@ -54,6 +108,12 @@ type Mutation {
   login(loginInput: LoginInput!): LoginResponse!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: ID!): User!
+  createArticle(createArticleInput: CreateArticleInput!): Article!
+  update(id: ID!, updateArticleInput: UpdateArticleInput!): Article!
+  remove(id: ID!): Boolean!
+  createLike(createLikeInput: CreateLikeInput!): Like!
+  updateLike(updateLikeInput: UpdateLikeInput!): Like!
+  removeLike(articleId: ID!): Boolean!
   createCategory(createCategoryInput: CreateCategoryInput!): Category!
   updateCategory(updateCategoryInput: UpdateCategoryInput!): Category!
   removeCategory(id: ID!): Category!
@@ -83,6 +143,29 @@ input UpdateUserInput {
   roleType: RoleTypes
   phoneNumber: String
   id: ID!
+}
+
+input CreateArticleInput {
+  title: String!
+  content: String!
+  categoryId: String!
+  imageUrls: [String!]
+}
+
+input UpdateArticleInput {
+  id: ID!
+  title: String
+  content: String
+  imageUrls: [String!]
+}
+
+input CreateLikeInput {
+  articleId: String!
+}
+
+input UpdateLikeInput {
+  articleId: String
+  id: Int!
 }
 
 input CreateCategoryInput {

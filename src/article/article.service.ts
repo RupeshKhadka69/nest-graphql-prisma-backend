@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArticleInput } from './dto/create-article.input';
 import { UpdateArticleInput } from './dto/update-article.input';
-import { PrismaService } from 'src/prisma/prisma.service';
-
+import { PrismaService } from '../prisma/prisma.service';
 @Injectable()
 export class ArticleService {
   constructor(private prisma: PrismaService) {}
@@ -140,7 +139,7 @@ export class ArticleService {
       });
       article.views += 1;
     }
-    this.mapArticleWithCounts(article);
+   return this.mapArticleWithCounts(article);
   }
 
   async update(

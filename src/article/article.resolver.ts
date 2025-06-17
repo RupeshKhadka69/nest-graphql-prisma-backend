@@ -3,24 +3,24 @@ import { ArticleService } from './article.service';
 import { CreateArticleInput } from './dto/create-article.input';
 import { UpdateArticleInput } from './dto/update-article.input';
 import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { AuthGuard } from 'src/users/auth.guard';
 import { CurrentUser } from 'src/users/current.decorator';
 import { Article } from './entities/article.entity';
 
 @Resolver(Article)
 export class ArticleResolver {
-  constructor(private readonly articleService: ArticleService) { }
+  constructor(private readonly articleService: ArticleService) {}
 
   @Mutation(() => Article)
   @UseGuards(AuthGuard)
-  async create(
+  async createArticle(
     @Args('createArticleInput') createArticleInput: CreateArticleInput,
     @CurrentUser() user: any,
   ) {
     return this.articleService.create(createArticleInput, user.id);
   }
 
-  @Query(() => Article, { name: 'articles' })
+  @Query(() => [Article], { name: 'articles' })
   async findAll(
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
