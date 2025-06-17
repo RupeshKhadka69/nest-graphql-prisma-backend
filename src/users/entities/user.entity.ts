@@ -1,6 +1,5 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { RoleTypes } from '../../common/enums/role-types.enum';
-
+import { RoleTypes } from '@prisma/client';
 @ObjectType()
 export class User {
   @Field(() => ID)
@@ -21,11 +20,11 @@ export class User {
   @Field({ defaultValue: 'Active' })
   userStatus: string;
 
-  @Field(() => RoleTypes, { nullable: true })
-  roleType?: RoleTypes;
+  @Field(() => RoleTypes, { defaultValue: 'READER', nullable: true })
+  roleType: RoleTypes | null;
 
   @Field({ nullable: true })
-  phoneNumber?: string;
+  phoneNumber?: string | null;
 
   @Field()
   createdAt: Date;
